@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,13 +16,14 @@ import javax.persistence.Table;
 public class Seat {
   @Id
   @Column(name = "SEAT_ID")
-  private Integer seatId;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long seatId;
   @Column(name = "OFFICE_ID")
-  private Integer officeId;
+  private Long officeId;
   @Column(name = "CENTER_X")
   private Integer centerX;
   @Column(name = "CENTER_Y")
   private Integer centerY;
   @Column(name = "EMPLOYEE_ID")
-  private Integer employeeId;
+  private Long employeeId;
 }

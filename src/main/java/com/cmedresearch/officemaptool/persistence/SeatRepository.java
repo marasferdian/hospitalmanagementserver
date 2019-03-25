@@ -5,7 +5,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SeatRepository extends CrudRepository<Seat, Integer> {
-  Iterable<Seat> findAllByOfficeId(Integer officeId);
-  Seat findBySeatId(Integer seatId);
+public interface SeatRepository extends CrudRepository<Seat, Long> {
+  Iterable<Seat> findAllByOfficeId(Long officeId);
+  Seat findBySeatId(Long seatId);
+  void deleteBySeatId(Long seatId);
 }

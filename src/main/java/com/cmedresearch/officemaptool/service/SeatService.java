@@ -19,15 +19,33 @@ public class SeatService {
     this.seatRepository = seatRepository;
   }
 
-  public Seat getSeatById(Integer seatId) {
+  public Seat getSeatById(Long officeId, Long seatId) {
     Seat seat = seatRepository.findBySeatId(seatId);
-    if (seat == null) {
+    if (seat == null || !seat.getOfficeId().equals(officeId)) {
       throw new RuntimeException();
     }
     return seat;
   }
 
-  public List<Seat> getAllSeatsInOffice(Integer officeId) {
+  public List<Seat> getAllSeatsInOffice(Long officeId) {
     return IteratorUtils.toList(seatRepository.findAllByOfficeId(officeId).iterator());
+  }
+
+  public Seat createSeatInOffice(Long officeId, Seat seat) {
+    seat.setOfficeId(officeId);
+    return seatRepository.save(seat);
+  }
+
+  public Seat editSeat(Long officeId, Long seatId, Seat newSeat) {
+    Seat seat = getSeatById(officeId, seatId);
+    seat.setCenterX(newSeat.getCenterX());
+    seat.setCenterY(newSeat.getCenterY());
+    seat.setEmployeeId(newSeat.getEmployeeId());
+    return seatRepository.save(seat);
+  }
+
+  public void deleteSeat(Long officeId, Long seatId) {
+    getSeatById(officeId, seatId);
+    seatRepository.deleteBySeatId(seatId);
   }
 }

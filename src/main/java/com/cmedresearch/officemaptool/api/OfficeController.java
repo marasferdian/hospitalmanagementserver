@@ -1,6 +1,5 @@
 package com.cmedresearch.officemaptool.api;
 
-import com.cmedresearch.officemaptool.model.Employee;
 import com.cmedresearch.officemaptool.model.Office;
 import com.cmedresearch.officemaptool.service.OfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
