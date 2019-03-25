@@ -1,7 +1,9 @@
 package com.cmedresearch.officemaptool.service;
 
 import com.cmedresearch.officemaptool.model.Office;
+import com.cmedresearch.officemaptool.persistence.ConferenceRoomRepository;
 import com.cmedresearch.officemaptool.persistence.OfficeRepository;
+import com.cmedresearch.officemaptool.persistence.SeatRepository;
 import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,10 +15,18 @@ import java.util.List;
 @Transactional
 public class OfficeService {
     private OfficeRepository officeRepository;
+    private SeatRepository seatRepository;
+    private ConferenceRoomRepository conferenceRoomRepository;
 
     @Autowired
-    public OfficeService(OfficeRepository officeRepository) {
+    public OfficeService(
+            OfficeRepository officeRepository,
+            SeatRepository seatRepository,
+            ConferenceRoomRepository conferenceRoomRepository
+    ) {
         this.officeRepository = officeRepository;
+        this.seatRepository = seatRepository;
+        this.conferenceRoomRepository = conferenceRoomRepository;
     }
 
     public Office getOfficeById(Long officeId) {
@@ -42,6 +52,8 @@ public class OfficeService {
 
     public void deleteOffice(Long officeId) {
         getOfficeById(officeId);
+        seatRepository.deleteAllByOfficeId(officeId);
+        conferenceRoomRepository.deleteAllByOfficeId(officeId);
         officeRepository.deleteByOfficeId(officeId);
     }
 

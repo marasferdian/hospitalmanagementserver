@@ -9,4 +9,5 @@ public interface SeatRepository extends CrudRepository<Seat, Long> {
   Iterable<Seat> findAllByOfficeId(Long officeId);
   Seat findBySeatId(Long seatId);
   void deleteBySeatId(Long seatId);
+  void deleteAllByOfficeId(Long officeId);
 }
