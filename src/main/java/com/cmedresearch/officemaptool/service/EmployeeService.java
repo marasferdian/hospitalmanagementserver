@@ -19,7 +19,7 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
-    public Employee getEmployeeById(Integer employeeId) {
+    private Employee fetchEmployee(Long employeeId) {
         Employee employee = employeeRepository.findByEmployeeId(employeeId);
         if (employee == null) {
             throw new RuntimeException();
@@ -27,7 +27,29 @@ public class EmployeeService {
         return employee;
     }
 
-    public List<Employee> getAllEmployeesInOffice(Integer employeeId) {
-        return IteratorUtils.toList(employeeRepository.findAllByEmployeeId(employeeId).iterator());
+    public Employee getEmployee(Long employeeId) {
+        return fetchEmployee(employeeId);
+    }
+
+    public Employee createEmployee(Employee employee) {
+        return employeeRepository.save(employee);
+    }
+
+    public void deleteEmployee(Long employeeId) {
+        fetchEmployee(employeeId);
+        employeeRepository.deleteByEmployeeId(employeeId);
+    }
+
+    public Employee editEmployee(Long employeeId, Employee newEmp) {
+        Employee employee = fetchEmployee(employeeId);
+        employee.setFirstName(newEmp.getFirstName());
+        employee.setLastName(newEmp.getLastName());
+        employee.setDepartment(newEmp.getDepartment());
+        employee.setJobTitle(newEmp.getJobTitle());
+        return employeeRepository.save(employee);
+    }
+
+    public List<Employee> getEmployees() {
+        return IteratorUtils.toList(employeeRepository.findAll().iterator());
     }
 }

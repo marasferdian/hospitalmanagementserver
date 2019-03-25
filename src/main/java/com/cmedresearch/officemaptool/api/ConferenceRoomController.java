@@ -20,5 +20,6 @@ public class ConferenceRoomController {
     @GetMapping("/office/{officeId}/rooms/{conferenceRoomId}")
     public ResponseEntity getConferenceRoom(@PathVariable Integer conferenceRoomId) {
         return new ResponseEntity<>(conferenceRoomService.getAllConferenceRoomInOffice(conferenceRoomId), HttpStatus.OK);
+
     }
 }
