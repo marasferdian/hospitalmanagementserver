@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.*;
 
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name = "CONFERENCE")
-public class ConferenceRoom {
+public class ConferenceRoom extends ResourceSupport {
     @Id
     @Column(name = "CONFERENCE_ROOM_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
