@@ -26,6 +26,7 @@ public class OfficeController {
     office.add(
         linkTo(methodOn(OfficeController.class).getOffice(office.getOfficeId())).withSelfRel(),
         linkTo(methodOn(OfficeController.class).editOffice(office.getOfficeId(), null)).withRel("update"),
+        linkTo(methodOn(OfficeController.class).deleteOffice(office.getOfficeId())).withRel("delete"),
         linkTo(methodOn(SeatController.class).getSeats(office.getOfficeId())).withRel("seats"),
         linkTo(methodOn(SeatController.class).createSeat(office.getOfficeId(), null)).withRel("createSeat"),
         linkTo(methodOn(ConferenceRoomController.class).getConferenceRooms(office.getOfficeId())).withRel("rooms"),
