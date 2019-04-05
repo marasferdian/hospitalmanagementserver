@@ -18,6 +18,7 @@ public class RootController {
         linkTo(methodOn(OfficeController.class).getOffices()).withRel("offices"),
         linkTo(methodOn(OfficeController.class).createOffice(null)).withRel("createOffice"),
         linkTo(methodOn(EmployeeController.class).getEmployees()).withRel("employees"),
+        linkTo(methodOn(EmployeeController.class).getUnassignedEmployees()).withRel("unassignedEmployees"),
         linkTo(methodOn(EmployeeController.class).createEmployee(null)).withRel("createEmployee")
     );
     return new ResponseEntity<>(res, HttpStatus.OK);

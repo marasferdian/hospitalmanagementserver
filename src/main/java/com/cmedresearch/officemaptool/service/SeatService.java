@@ -33,11 +33,18 @@ public class SeatService {
 
   public Seat createSeatInOffice(Long officeId, Seat seat) {
     seat.setOfficeId(officeId);
+    if (seat.getEmployeeId() != null && seatRepository.findByEmployeeId(seat.getEmployeeId()) != null) {
+      throw new RuntimeException();
+    }
     return seatRepository.save(seat);
   }
 
   public Seat editSeat(Long officeId, Long seatId, Seat newSeat) {
     Seat seat = getSeatById(officeId, seatId);
+    if (newSeat.getEmployeeId() != null && !newSeat.getEmployeeId().equals(seat.getEmployeeId()) &&
+        seatRepository.findByEmployeeId(newSeat.getEmployeeId()) != null) {
+      throw new RuntimeException();
+    }
     seat.setCenterX(newSeat.getCenterX());
     seat.setCenterY(newSeat.getCenterY());
     seat.setEmployeeId(newSeat.getEmployeeId());

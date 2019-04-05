@@ -21,6 +21,11 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeService.getEmployees(), HttpStatus.OK);
     }
 
+    @GetMapping("/unassignedEmployees")
+    public ResponseEntity getUnassignedEmployees() {
+      return new ResponseEntity<>(employeeService.getUnassignedEmployees(), HttpStatus.OK);
+    }
+
     @PostMapping("/employees")
     public ResponseEntity createEmployee(@RequestBody Employee employee) {
         return new ResponseEntity<>(employeeService.createEmployee(employee), HttpStatus.OK);
