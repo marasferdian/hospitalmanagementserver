@@ -1,5 +1,7 @@
 package com.cmedresearch.officemaptool.service;
 
+import com.cmedresearch.officemaptool.exception.EmployeeAssignedException;
+import com.cmedresearch.officemaptool.exception.NotFoundException;
 import com.cmedresearch.officemaptool.model.Seat;
 import com.cmedresearch.officemaptool.persistence.SeatRepository;
 import org.apache.commons.collections4.IteratorUtils;
@@ -22,7 +24,7 @@ public class SeatService {
   public Seat getSeatById(Long officeId, Long seatId) {
     Seat seat = seatRepository.findBySeatId(seatId);
     if (seat == null || !seat.getOfficeId().equals(officeId)) {
-      throw new RuntimeException();
+      throw new NotFoundException();
     }
     return seat;
   }
@@ -34,7 +36,7 @@ public class SeatService {
   public Seat createSeatInOffice(Long officeId, Seat seat) {
     seat.setOfficeId(officeId);
     if (seat.getEmployeeId() != null && seatRepository.findByEmployeeId(seat.getEmployeeId()) != null) {
-      throw new RuntimeException();
+      throw new EmployeeAssignedException();
     }
     return seatRepository.save(seat);
   }

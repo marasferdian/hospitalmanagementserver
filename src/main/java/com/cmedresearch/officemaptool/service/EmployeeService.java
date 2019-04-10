@@ -1,5 +1,6 @@
 package com.cmedresearch.officemaptool.service;
 
+import com.cmedresearch.officemaptool.exception.NotFoundException;
 import com.cmedresearch.officemaptool.model.Employee;
 import com.cmedresearch.officemaptool.model.Seat;
 import com.cmedresearch.officemaptool.persistence.EmployeeRepository;
@@ -30,7 +31,7 @@ public class EmployeeService {
   private Employee fetchEmployee(Long employeeId) {
     Employee employee = employeeRepository.findByEmployeeId(employeeId);
     if (employee == null) {
-      throw new RuntimeException();
+      throw new NotFoundException();
     }
     return employee;
   }
