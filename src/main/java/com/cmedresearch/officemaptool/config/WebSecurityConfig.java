@@ -19,7 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   public void configure(HttpSecurity http) throws Exception {
     http.httpBasic().disable()
         .authorizeRequests()
-        .antMatchers("/login/**").permitAll() // TODO: Ain't doing shit, should fix later
+        .antMatchers("/login").permitAll()
         .antMatchers(HttpMethod.GET, "**").permitAll()
         .antMatchers(HttpMethod.OPTIONS, "**").permitAll()
         .antMatchers("**").authenticated();
