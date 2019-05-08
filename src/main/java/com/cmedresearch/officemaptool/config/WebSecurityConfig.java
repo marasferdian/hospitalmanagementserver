@@ -21,6 +21,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         .antMatchers("/login/**").permitAll() // TODO: Ain't doing shit, should fix later
         .antMatchers(HttpMethod.GET, "**").permitAll()
+        .antMatchers(HttpMethod.OPTIONS, "**").permitAll()
         .antMatchers("**").authenticated();
   }
 }
