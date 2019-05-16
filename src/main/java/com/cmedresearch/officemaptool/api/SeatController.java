@@ -5,6 +5,7 @@ import com.cmedresearch.officemaptool.service.SeatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,42 +22,46 @@ public class SeatController {
     this.seatService = seatService;
   }
 
-  private static void addLinks(Long officeId, Seat seat) {
+  private static void addLinks(Long officeId, Seat seat, Authentication authentication) {
     seat.removeLinks();
     seat.add(
-        linkTo(methodOn(SeatController.class).getSeat(officeId, seat.getSeatId())).withSelfRel(),
-        linkTo(methodOn(SeatController.class).editSeat(officeId, seat.getSeatId(), null)).withRel("update"),
-        linkTo(methodOn(SeatController.class).deleteSeat(officeId, seat.getSeatId())).withRel("delete")
+        linkTo(methodOn(SeatController.class).getSeat(officeId, seat.getSeatId(), authentication)).withSelfRel()
     );
+    if (authentication != null) {
+      seat.add(
+          linkTo(methodOn(SeatController.class).editSeat(officeId, seat.getSeatId(), null, authentication)).withRel("update"),
+          linkTo(methodOn(SeatController.class).deleteSeat(officeId, seat.getSeatId())).withRel("delete")
+      );
+    }
   }
 
   @GetMapping("/office/{officeId}/seats")
-  public ResponseEntity getSeats(@PathVariable Long officeId) {
+  public ResponseEntity getSeats(@PathVariable Long officeId, Authentication authentication) {
     List<Seat> seats = seatService.getAllSeatsInOffice(officeId);
     for (Seat seat : seats) {
-      addLinks(officeId, seat);
+      addLinks(officeId, seat, authentication);
     }
     return new ResponseEntity<>(seats, HttpStatus.OK);
   }
 
   @GetMapping("/office/{officeId}/seat/{seatId}")
-  public ResponseEntity getSeat(@PathVariable Long officeId, @PathVariable Long seatId) {
+  public ResponseEntity getSeat(@PathVariable Long officeId, @PathVariable Long seatId, Authentication authentication) {
     Seat seat = seatService.getSeatById(officeId, seatId);
-    addLinks(officeId, seat);
+    addLinks(officeId, seat, authentication);
     return new ResponseEntity<>(seat, HttpStatus.OK);
   }
 
   @PostMapping("/office/{officeId}/seats")
-  public ResponseEntity createSeat(@PathVariable Long officeId, @RequestBody Seat seat) {
+  public ResponseEntity createSeat(@PathVariable Long officeId, @RequestBody Seat seat, Authentication authentication) {
     seat = seatService.createSeatInOffice(officeId, seat);
-    addLinks(officeId, seat);
+    addLinks(officeId, seat, authentication);
     return new ResponseEntity<>(seat, HttpStatus.OK);
   }
 
   @PutMapping("/office/{officeId}/seat/{seatId}")
-  public ResponseEntity editSeat(@PathVariable Long officeId, @PathVariable Long seatId, @RequestBody Seat seat) {
+  public ResponseEntity editSeat(@PathVariable Long officeId, @PathVariable Long seatId, @RequestBody Seat seat, Authentication authentication) {
     seat = seatService.editSeat(officeId, seatId, seat);
-    addLinks(officeId, seat);
+    addLinks(officeId, seat, authentication);
     return new ResponseEntity<>(seat, HttpStatus.OK);
   }
 
