@@ -2,6 +2,7 @@ package com.cmedresearch.officemaptool.service;
 
 import com.cmedresearch.officemaptool.exception.NotFoundException;
 import com.cmedresearch.officemaptool.model.Office;
+import com.cmedresearch.officemaptool.model.Seat;
 import com.cmedresearch.officemaptool.persistence.ConferenceRoomRepository;
 import com.cmedresearch.officemaptool.persistence.OfficeRepository;
 import com.cmedresearch.officemaptool.persistence.SeatRepository;
@@ -36,6 +37,14 @@ public class OfficeService {
       throw new NotFoundException();
     }
     return office;
+  }
+
+  public Office getOfficeByEmployeeId(Long employeeId) {
+    Seat seat = seatRepository.findByEmployeeId(employeeId);
+    if (seat == null) {
+      throw new NotFoundException();
+    }
+    return officeRepository.findByOfficeId(seat.getOfficeId());
   }
 
   public Office createOffice(Office office) {

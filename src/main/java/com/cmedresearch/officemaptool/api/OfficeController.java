@@ -55,6 +55,13 @@ public class OfficeController {
     return new ResponseEntity<>(offices, HttpStatus.OK);
   }
 
+  @GetMapping("/officeByEmployeeId/{employeeId}")
+  public ResponseEntity getOfficeByEmployeeId(@PathVariable Long employeeId, Authentication authentication) {
+    Office office = officeService.getOfficeByEmployeeId(employeeId);
+    addLinks(office, authentication);
+    return new ResponseEntity<>(office, HttpStatus.OK);
+  }
+
   @PostMapping("/offices")
   public ResponseEntity createOffice(@RequestBody Office office, Authentication authentication) {
     office = officeService.createOffice(office);

@@ -25,7 +25,8 @@ public class EmployeeController {
   private static void addLinks(Employee employee, Authentication authentication) {
     employee.removeLinks();
     employee.add(
-        linkTo(methodOn(EmployeeController.class).getEmployee(employee.getEmployeeId(), authentication)).withSelfRel()
+        linkTo(methodOn(EmployeeController.class).getEmployee(employee.getEmployeeId(), authentication)).withSelfRel(),
+        linkTo(methodOn(OfficeController.class).getOfficeByEmployeeId(employee.getEmployeeId(), authentication)).withRel("office")
     );
     if (authentication != null) {
       employee.add(
