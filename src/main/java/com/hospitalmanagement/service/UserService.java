@@ -26,7 +26,7 @@ public class UserService {
 
     private User fetchUser(Long id) {
         Optional<User> user = userRepository.findById(id);
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             throw new NotFoundException();
         }
         return user.get();
@@ -51,5 +51,15 @@ public class UserService {
         foundUser.setJob(user.getJob());
         return foundUser;
 
+    }
+    public Long getIdByUsername(String username)
+    {
+        Optional<User> userOptional=userRepository.findByUsername(username);
+        if(userOptional.isEmpty())
+        {
+            throw new NotFoundException();
+        }
+        User foundUser=userOptional.get();
+        return foundUser.getUserId();
     }
 }

@@ -1,17 +1,19 @@
 package com.hospitalmanagement.api;
 
+import com.hospitalmanagement.exception.NotAllowedException;
 import com.hospitalmanagement.model.Appointment;
+import com.hospitalmanagement.model.User;
 import com.hospitalmanagement.service.AppointmentService;
+import com.hospitalmanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -20,6 +22,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RestController
 public class AppointmentController {
     private AppointmentService appointmentService;
+    private UserService userService;
 
     @Autowired
     public AppointmentController(AppointmentService appointmentService) {
@@ -35,7 +38,13 @@ public class AppointmentController {
 
     public static void addLinks(Appointment appointment, Authentication authentication) {
         appointment.removeLinks();
-        //TODO: add links after implementing methods
+        appointment.add(linkTo(methodOn(AppointmentController.class).getAppointment(appointment.getAppointmentId(),authentication)).withSelfRel());
+        if(hasAuthority(authentication,"SECRETAR")) {
+            appointment.add(linkTo(methodOn(AppointmentController.class).getAppointments(authentication)).withRel("all-appointments"));
+            appointment.add(linkTo(methodOn(AppointmentController.class).createAppointment(appointment,authentication)).withRel("create"));
+        }
+        else
+            throw new NotAllowedException();
     }
 
     @GetMapping("/appointment/{appointmentId}")
@@ -54,6 +63,41 @@ public class AppointmentController {
             addLinks(appointment,authentication);
         return new ResponseEntity<>(appointments,HttpStatus.OK);
     }
+
+    @PostMapping("/appointment")
+    public ResponseEntity createAppointment(@RequestBody Appointment appointment, Authentication authentication)
+    {
+        Appointment createdAppointment;
+        if(hasAuthority(authentication,"SECRETAR"))
+        {
+            createdAppointment=appointmentService.createAppointment(appointment.getPacientId(),appointment.getMedicId(),appointment.getDate());
+        }
+        else
+            throw new NotAllowedException();
+        addLinks(createdAppointment,authentication);
+        return new ResponseEntity<>(authentication,HttpStatus.OK);
+    }
+
+    @PutMapping("/appointment")
+    public ResponseEntity editAppointment(@PathVariable Long appointmentId,  @RequestBody Appointment appointment,Authentication authentication)
+    {
+        if(hasAuthority(authentication,"SECRETAR"))
+        {
+            appointment=appointmentService.editAppointment(appointmentId,appointment);
+            addLinks(appointment,authentication);
+            return new ResponseEntity<>(appointment,HttpStatus.OK);
+        }
+        else
+            throw new NotAllowedException();
+    }
+    @GetMapping("/appointment/my-appointment")
+    public ResponseEntity getAppointmentByPacientId(Authentication authentication)
+    {
+        Appointment foundAppointment=appointmentService.findAppointmentByUsername(authentication.getName());
+        addLinks(foundAppointment,authentication);
+        return new ResponseEntity<>(foundAppointment,HttpStatus.OK);
+    }
+
 
 
 }

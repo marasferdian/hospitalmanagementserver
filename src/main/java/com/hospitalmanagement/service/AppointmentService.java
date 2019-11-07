@@ -31,7 +31,7 @@ public class AppointmentService {
 
     private Appointment fetchAppointment(Long id) {
         Optional<Appointment> appointment = appointmentRepository.findById(id);
-        if (!appointment.isPresent()) {
+        if (appointment.isEmpty()) {
             throw new NotFoundException();
         }
         return appointment.get();
@@ -48,7 +48,7 @@ public class AppointmentService {
     public Appointment createAppointment(Long pacientId, Long medicId, Date date) {
         List<Appointment> currentAppointments = getAppointments();
         Optional<User> medic = userRepository.findById(medicId);
-        if (!medic.isPresent())
+        if (medic.isEmpty())
             throw new NotFoundException();
         for (Appointment appointment : currentAppointments) {
             if (appointment.getMedicId().equals(medicId) && appointment.getDate().equals(date))
@@ -75,5 +75,28 @@ public class AppointmentService {
         foundAppointment.setMedicId(appointment.getMedicId());
         foundAppointment.setDate(appointment.getDate());
         return foundAppointment;
+    }
+    public Appointment findAppointmentByPacientId(Long pacientId)
+    {
+        List<Appointment> appointments=getAppointments();
+        for(Appointment appointment:appointments)
+        {
+            if((appointment.getPacientId()).equals(pacientId))
+                return appointment;
+        }
+        throw new NotFoundException();
+    }
+    public Appointment findAppointmentByUsername(String username)
+    {
+        Optional <User> userOptional =userRepository.findByUsername(username);
+        if(userOptional.isEmpty())
+            throw new NotFoundException();
+        User foundUser=userOptional.get();
+        Optional<Appointment> foundAppointment=appointmentRepository.findByPacientId(foundUser.getUserId());
+        if(foundAppointment.isEmpty())
+        {
+            throw new NotFoundException();
+        }
+        return foundAppointment.get();
     }
 }

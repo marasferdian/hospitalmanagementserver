@@ -36,9 +36,14 @@ public class UserController {
 
         user.removeLinks();
         user.add(linkTo(methodOn(UserController.class).getUser(user.getUserId(), authentication)).withSelfRel());
-        //TODO: add link to appointment controller
         if (hasAuthority(authentication, "ADMIN")) {
             user.add(linkTo(methodOn(UserController.class).editUser(user.getUserId(), user, authentication)).withRel("edit"));
+        }
+        if(hasAuthority(authentication,"ADMIN"))
+
+        if(hasAuthority(authentication,"PACIENT"))
+        {
+            user.add(linkTo(methodOn(AppointmentController.class).getAppointmentByPacientId(authentication)).withSelfRel());
         }
     }
 
@@ -66,7 +71,8 @@ public class UserController {
         return getAuthorityList(authentication).contains(authorityName);
     }
 
-    @PostMapping("/user?type={pacient}") //TODO: figure this out
+
+    @PostMapping("/user")
     public ResponseEntity createUser(@RequestBody User user, Authentication authentication) {
         User createdUser;
         if (hasAuthority(authentication, "ADMIN")) {
@@ -86,7 +92,7 @@ public class UserController {
         return new ResponseEntity<>(createdUser, HttpStatus.OK);
     }
 
-    @PutMapping("/user/{userId}")
+    @PutMapping("/user")
     public ResponseEntity editUser(@PathVariable Long userId, @RequestBody User user, Authentication authentication) {
         if (hasAuthority(authentication, "ADMIN")) {
             user = userService.editUser(userId, user);

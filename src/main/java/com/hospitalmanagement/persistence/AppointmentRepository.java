@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface AppointmentRepository extends CrudRepository<Appointment, Long> {
     Optional<Appointment> findById(Long appointmentId);
-
+    Optional<Appointment> findByPacientId(Long pacientId);
     void deleteByAppointmentId(Long appointmentId);
 }
