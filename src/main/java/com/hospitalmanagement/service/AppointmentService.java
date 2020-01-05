@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +29,15 @@ public class AppointmentService {
     public AppointmentService(AppointmentRepository appointmentRepository, UserRepository userRepository) {
         this.appointmentRepository = appointmentRepository;
         this.userRepository = userRepository;
+        /*Appointment appointment=new Appointment();
+        appointment.setPacientId((long) 100);
+        appointment.setMedicId((long)68);
+        Calendar myCal=new GregorianCalendar(2020,Calendar.APRIL,26);
+        java.util.Date myDate=myCal.getTime();
+        Date sqlDate=new Date(myDate.getTime());
+        appointment.setDate(sqlDate);
+        appointmentRepository.save(appointment);*/
+
     }
 
     private Appointment fetchAppointment(Long id) {

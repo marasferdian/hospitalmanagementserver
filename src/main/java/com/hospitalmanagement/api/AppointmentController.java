@@ -40,14 +40,14 @@ public class AppointmentController {
         appointment.removeLinks();
         appointment.add(linkTo(methodOn(AppointmentController.class).getAppointment(appointment.getAppointmentId(),authentication)).withSelfRel());
         if(hasAuthority(authentication,"SECRETAR")) {
-            appointment.add(linkTo(methodOn(AppointmentController.class).getAppointments(authentication)).withRel("all-appointments"));
+
             appointment.add(linkTo(methodOn(AppointmentController.class).createAppointment(appointment,authentication)).withRel("create"));
+            appointment.add(linkTo(methodOn(AppointmentController.class).editAppointment(appointment.getAppointmentId(),appointment,authentication)).withRel("edit"));
         }
-        else
-            throw new NotAllowedException();
+
     }
 
-    @GetMapping("/appointment/{appointmentId}")
+    @GetMapping("/appointments/{appointmentId}")
     public ResponseEntity getAppointment(@PathVariable Long appointmentId, Authentication authentication)
     {
         Appointment appointment=appointmentService.getAppointment(appointmentId);
@@ -68,20 +68,15 @@ public class AppointmentController {
     public ResponseEntity createAppointment(@RequestBody Appointment appointment, Authentication authentication)
     {
         Appointment createdAppointment;
-        if(hasAuthority(authentication,"SECRETAR"))
-        {
-            createdAppointment=appointmentService.createAppointment(appointment.getPacientId(),appointment.getMedicId(),appointment.getDate());
-        }
-        else
-            throw new NotAllowedException();
+        createdAppointment=appointmentService.createAppointment(appointment.getPacientId(),appointment.getMedicId(),appointment.getDate());
         addLinks(createdAppointment,authentication);
         return new ResponseEntity<>(authentication,HttpStatus.OK);
     }
 
-    @PutMapping("/appointment")
+    @PutMapping("/appointments/{appointmentId}")
     public ResponseEntity editAppointment(@PathVariable Long appointmentId,  @RequestBody Appointment appointment,Authentication authentication)
     {
-        if(hasAuthority(authentication,"SECRETAR"))
+        if(hasAuthority(authentication,"SECRETAR") || hasAuthority(authentication,"ADMIN"))
         {
             appointment=appointmentService.editAppointment(appointmentId,appointment);
             addLinks(appointment,authentication);
@@ -90,12 +85,21 @@ public class AppointmentController {
         else
             throw new NotAllowedException();
     }
-    @GetMapping("/appointment/my-appointment")
+    @GetMapping("/appointments/my-appointment")
     public ResponseEntity getAppointmentByPacientId(Authentication authentication)
     {
         Appointment foundAppointment=appointmentService.findAppointmentByUsername(authentication.getName());
         addLinks(foundAppointment,authentication);
         return new ResponseEntity<>(foundAppointment,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/appointments/{appointmentId}")
+    public ResponseEntity deleteAppointment(@PathVariable Long appointmentId,Authentication authentication)
+    {
+
+            appointmentService.deleteAppointment(appointmentId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

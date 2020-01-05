@@ -21,8 +21,8 @@ public class UserService {
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-
     }
+
 
     private User fetchUser(Long id) {
         Optional<User> user = userRepository.findById(id);

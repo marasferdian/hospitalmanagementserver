@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,15 +40,26 @@ public class UserController {
         if (hasAuthority(authentication, "ADMIN")) {
             user.add(linkTo(methodOn(UserController.class).editUser(user.getUserId(), user, authentication)).withRel("edit"));
         }
-        if(hasAuthority(authentication,"ADMIN"))
+        if(hasAuthority(authentication,"ADMIN") || hasAuthority(authentication,"SECRETAR"))
+        {
+            user.add(linkTo(methodOn(AppointmentController.class).getAppointments(authentication)).withRel("appointments"));
+            user.add(linkTo(methodOn(UserController.class).createUser(user,authentication)).withRel("create"));
+        }
 
         if(hasAuthority(authentication,"PACIENT"))
         {
             user.add(linkTo(methodOn(AppointmentController.class).getAppointmentByPacientId(authentication)).withSelfRel());
         }
     }
-
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user")
+    public ResponseEntity getCurrentUser(Authentication authentication)
+    {
+        UserService service=this.userService;
+        String currentUserName=authentication.getName();
+        User user=service.getUser(service.getIdByUsername(currentUserName));
+        return new ResponseEntity<>(user,HttpStatus.OK);
+    }
+    @GetMapping("/users/{userId}")
     public ResponseEntity getUser(@PathVariable Long userId, Authentication authentication) {
         User user = userService.getUser(userId);
         addLinks(user, authentication);
@@ -72,7 +84,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     public ResponseEntity createUser(@RequestBody User user, Authentication authentication) {
         User createdUser;
         if (hasAuthority(authentication, "ADMIN")) {
@@ -92,7 +104,7 @@ public class UserController {
         return new ResponseEntity<>(createdUser, HttpStatus.OK);
     }
 
-    @PutMapping("/user")
+    @PutMapping("/users")
     public ResponseEntity editUser(@PathVariable Long userId, @RequestBody User user, Authentication authentication) {
         if (hasAuthority(authentication, "ADMIN")) {
             user = userService.editUser(userId, user);

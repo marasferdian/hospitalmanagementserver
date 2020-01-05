@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 @EnableResourceServer
 @Slf4j
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
-  @Value("omt")
+  @Value("hospitalmanagement")
   private String resourceId;
 
   @Override

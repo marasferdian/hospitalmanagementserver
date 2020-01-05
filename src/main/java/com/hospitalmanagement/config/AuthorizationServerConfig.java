@@ -30,11 +30,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
   private final AuthenticationManager authenticationManager;
   private final TokenStore tokenStore;
 
-  @Value("omt-client")
+  @Value("hospitalmanagement-client")
   private String clientId;
   @Value("secret")
   private String secret;
-  @Value("omt")
+  @Value("hospitalmanagement")
   private String resourceId;
   @Value("3600")
   private int expiration;
